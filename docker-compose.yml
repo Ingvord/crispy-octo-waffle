@@ -1,0 +1,35 @@
+
+version: '3.8'
+
+services:
+  substrate-node:
+    image: parity/polkadot:v1.16.7
+    container_name: substrate-node
+    ports:
+      - "9944:9944"  # WebSocket
+      - "9933:9933"  # RPC HTTP
+    command: ["--dev", "--prometheus-external", "--rpc-external", "--rpc-cors=all", "--name my-polkadot-node-calling-home"]
+    volumes:
+      - substrate-data:/data
+    networks:
+      - seamse-net
+
+  ipfs-node:
+    image: ipfs/go-ipfs:latest
+    container_name: ipfs-node
+    ports:
+      - "5001:5001"    # IPFS API
+      - "8080:8080"    # IPFS Gateway
+      - "4001:4001"    # Swarm (for local p2p discovery)
+    volumes:
+      - ipfs-data:/data/ipfs
+    networks:
+      - seamse-net
+
+volumes:
+  substrate-data:
+  ipfs-data:
+
+networks:
+  seamse-net:
+    driver: bridge
